@@ -1,0 +1,20 @@
+dotenv: .env
+compiler:
+reports:
+  exclude_contracts:
+    - SafeMath
+compiler:
+networks:
+  default: "development"
+  development:
+    keyhash: "0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311"
+    link_fee: 100000000000000000
+  mumbai_moralis:
+    verify: False
+  kovan:
+    verify: True
+  mainnet:
+    verify: False
+wallets:
+  from_blue_key: ${WALLET_PRIVATE_KEY_BLUE}
+  from_green_key: ${WALLET_PRIVATE_KEY_GREEN}
