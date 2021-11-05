@@ -23,7 +23,7 @@ def get_account(index=None, id=None):
         or network.show_active() in FORKED_LOCAL_ENVIRONMENTS
     ):
         return accounts[0]
-    return accounts.add(config["wallets"]["from_key"])
+    return accounts.add(config["wallets"]["from_blue_key"])
 
 
 def is_local():
