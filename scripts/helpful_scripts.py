@@ -2,16 +2,11 @@ from brownie import (
     network,
     config,
     accounts,
-    Contract,
 )
 import eth_utils
-from web3 import Web3
 
 FORKED_LOCAL_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 LOCAL_BLOCKCHAIN_ENVIRONMENTS = ["development", "ganache-local"]
-
-DECIMALS = 8
-STARTING_PRICE = 200000000000
 
 
 def get_address(address):

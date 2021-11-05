@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 
-import "./vendor/openzeppelin-contracts/upgradeable-contracts/token/ERC20/ERC20Upgradeable.sol";
-import "./vendor/openzeppelin-contracts/upgradeable-contracts/access/OwnableUpgradeable.sol";
+import "../vendor/openzeppelin-contracts/upgradeable-contracts/token/ERC20/ERC20Upgradeable.sol";
+import "../vendor/openzeppelin-contracts/upgradeable-contracts/access/OwnableUpgradeable.sol";
 
-contract CrowdSafe is ERC20Upgradeable, OwnableUpgradeable {
+contract CrowdSafeMock is ERC20Upgradeable, OwnableUpgradeable {
     uint256 public minimumCompensation;
     uint256 public version;
     uint256 private _amountBan;
@@ -160,6 +160,10 @@ contract CrowdSafe is ERC20Upgradeable, OwnableUpgradeable {
 
     function _setReporterCountBan(uint256 reporterCountBan) public {
         _reporterCountBan = reporterCountBan;
+    }
+
+    function setVersion(uint256 _version) public onlyOwner {
+        version = _version;
     }
 
     modifier banSpamBot() {

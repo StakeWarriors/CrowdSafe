@@ -53,7 +53,7 @@ contract ERC20Upgradeable is
      */
     modifier founderBanned() {
         require(
-            !founderMintBan[_msgSender()],
+            !founderMintBan[msg.sender],
             "You are a founder and therefore you are banned from functions that result in minting new tokens"
         );
         _;
