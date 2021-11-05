@@ -4,8 +4,11 @@ networks:
     verify: False
   kovan:
     verify: True
+  polygon-main:
+    verify: False
   mainnet:
     verify: False
 wallets:
   from_blue_key: ${WALLET_PRIVATE_KEY_BLUE}
   from_green_key: ${WALLET_PRIVATE_KEY_GREEN}
+  # from_red_key: ${WALLET_PRIVATE_KEY_RED}

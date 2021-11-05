@@ -73,6 +73,7 @@ contract CrowdSafe is ERC20Upgradeable, OwnableUpgradeable {
         banSpamBot
     {
         require(fraudContract != address(0));
+        require(fraudContract != msg.sender);
 
         uint256 confidence = (msg.value + minimumCompensation) /
             minimumCompensation;
@@ -99,6 +100,7 @@ contract CrowdSafe is ERC20Upgradeable, OwnableUpgradeable {
         banSpamBot
     {
         require(verifiedContract != address(0));
+        require(verifiedContract != msg.sender);
 
         uint256 confidence = (msg.value + minimumCompensation) /
             minimumCompensation;

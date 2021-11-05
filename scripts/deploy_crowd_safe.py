@@ -7,7 +7,7 @@ from brownie import (
     Contract,
     config,
 )
-from scripts.helpful_scripts import get_account, encode_function_data
+from scripts.helpful_scripts import get_account, encode_function_data, print_weblink
 
 
 def deploy_crowdsafe(contract):
@@ -40,6 +40,7 @@ def deploy_proxy(contract):
 def deploy_contract():
     contract = deploy_crowdsafe(CrowdSafe)
     (proxy, proxy_admin, proxy_crowdsafe) = deploy_proxy(contract)
+    print_weblink()
     return proxy, proxy_admin, proxy_crowdsafe
 
 

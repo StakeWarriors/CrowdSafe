@@ -122,7 +122,7 @@ contract ERC20Upgradeable is
      * {IERC20-balanceOf} and {IERC20-transfer}.
      */
     function decimals() public view virtual override returns (uint8) {
-        return 18;
+        return 0;
     }
 
     /**

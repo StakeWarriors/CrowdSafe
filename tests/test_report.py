@@ -44,6 +44,15 @@ def test_normal_user_can_report_safe():
     assert proxy_crowdsafe.safeReporters(1) == get_account(index=1)
 
 
+def test_normal_user_cant_report_self():
+    selv = get_account(index=1)
+    (proxy, proxy_admin, proxy_crowdsafe) = deploy_contract()
+    with pytest.raises(exceptions.VirtualMachineError):
+        proxy_crowdsafe.ReportScam(selv, {"from": selv, "amount": 100})
+    with pytest.raises(exceptions.VirtualMachineError):
+        proxy_crowdsafe.ReportSafe(selv, {"from": selv, "amount": 100})
+
+
 def test_master_user_cant_report_scam():
     (proxy, proxy_admin, proxy_crowdsafe) = deploy_contract()
     with pytest.raises(exceptions.VirtualMachineError):

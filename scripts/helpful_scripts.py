@@ -2,11 +2,20 @@ from brownie import (
     network,
     config,
     accounts,
+    TransparentUpgradeableProxy,
+    ProxyAdmin,
+    CrowdSafe,
 )
 import eth_utils
 
 FORKED_LOCAL_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 LOCAL_BLOCKCHAIN_ENVIRONMENTS = ["development", "ganache-local"]
+POLY_BLOCKCHAIN_ENVIRONMENTS = [
+    "mumbai_moralis",
+    "mumbai_moralis2",
+    "polygon-main",
+    "polygon-test",
+]
 
 
 def get_address(address):
@@ -45,7 +54,7 @@ def upgrade(
     new_implementation_address,
     proxy_admin_contract=None,
     initializer=None,
-    *args
+    *args,
 ):
     transaction = None
     if proxy_admin_contract:
@@ -74,3 +83,25 @@ def upgrade(
                 new_implementation_address, {"from": account}
             )
     return transaction
+
+
+def print_weblink():
+    if not is_local():
+        if network.show_active() in POLY_BLOCKCHAIN_ENVIRONMENTS:
+            # Running this command without deploying will show most recent deployments
+            print(
+                f"https://polygonscan.com/address/{TransparentUpgradeableProxy[-1].address}"
+            )
+            print(f"https://polygonscan.com/address/{ProxyAdmin[-1].address}")
+            print(f"https://polygonscan.com/address/{CrowdSafe[-1].address}")
+        else:
+            # Running this command without deploying will show most recent deployments
+            print(
+                f"https://{network.show_active()}.etherscan.io/address/{TransparentUpgradeableProxy[-1].address}"
+            )
+            print(
+                f"https://{network.show_active()}.etherscan.io/address/{ProxyAdmin[-1].address}"
+            )
+            print(
+                f"https://{network.show_active()}.etherscan.io/address/{CrowdSafe[-1].address}"
+            )
