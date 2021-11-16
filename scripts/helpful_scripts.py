@@ -5,17 +5,27 @@ from brownie import (
     TransparentUpgradeableProxy,
     ProxyAdmin,
     CrowdSafe,
+    CrowdSafeV2,
+    Contract,
 )
 import eth_utils
 
-FORKED_LOCAL_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
+FORKED_LOCAL_ENVIRONMENTS = ["mumbai_moralis", "mumbai_moralis2", "polygon-test"]
 LOCAL_BLOCKCHAIN_ENVIRONMENTS = ["development", "ganache-local"]
 POLY_BLOCKCHAIN_ENVIRONMENTS = [
     "mumbai_moralis",
     "mumbai_moralis2",
-    "polygon-main",
     "polygon-test",
+    "polygon-main",
 ]
+
+
+contract_to_mock = {
+    "TransparentUpgradeableProxy": TransparentUpgradeableProxy,
+    "ProxyAdmin": ProxyAdmin,
+    "CrowdSafe": CrowdSafe,
+    "CrowdSafeV2": CrowdSafeV2,
+}
 
 
 def get_address(address):
@@ -27,19 +37,42 @@ def get_account(index=None, id=None):
         return accounts[index]
     if id:
         return accounts.load(id)
-    if (
-        network.show_active() in LOCAL_BLOCKCHAIN_ENVIRONMENTS
-        or network.show_active() in FORKED_LOCAL_ENVIRONMENTS
-    ):
+    if network.show_active() in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         return accounts[0]
-    return accounts.add(config["wallets"]["from_blue_key"])
+    return accounts.add(config["wallets"]["from_red_key"])
 
 
-def is_local():
+def is_dev():
     return (
         network.show_active() in LOCAL_BLOCKCHAIN_ENVIRONMENTS
         or network.show_active() in FORKED_LOCAL_ENVIRONMENTS
     )
+
+
+def deploy_dev_contract(contract):
+    account = get_account()
+    if contract == "TransparentUpgradeableProxy":
+        raise "No Deploy Code Implemented"
+    if contract == "ProxyAdmin":
+        return ProxyAdmin.deploy({"from": account})
+    if contract == "CrowdSafe" or "CrowdSafeV2":
+        return contract_to_mock[contract].deploy(
+            {"from": account},
+            publish_source=config["networks"][network.show_active()].get(
+                "verify", False
+            ),
+        )
+
+
+def get_contract(contract):
+    if not is_dev() and len(config["networks"][network.show_active()][contract]) > 0:
+        return Contract.from_explorer(
+            config["networks"][network.show_active()][contract]
+        )
+    elif len(contract_to_mock[contract]) > 0:
+        return contract_to_mock[contract][-1]
+    else:
+        return deploy_dev_contract(contract)
 
 
 def encode_function_data(initializer=None, *args):
@@ -86,22 +119,35 @@ def upgrade(
 
 
 def print_weblink():
-    if not is_local():
-        if network.show_active() in POLY_BLOCKCHAIN_ENVIRONMENTS:
+    transparentUpgradeableProxyAddr = None
+    proxyAdminAddr = None
+    crowdSafeAddr = None
+
+    if len(TransparentUpgradeableProxy) > 0:
+        transparentUpgradeableProxyAddr = TransparentUpgradeableProxy[-1].address
+    else:
+        transparentUpgradeableProxyAddr = config["networks"][network.show_active()][
+            "TransparentUpgradeableProxy"
+        ]
+    if len(ProxyAdmin) > 0:
+        proxyAdminAddr = ProxyAdmin[-1].address
+    else:
+        proxyAdminAddr = config["networks"][network.show_active()]["ProxyAdmin"]
+    if len(CrowdSafe) > 0:
+        crowdSafeAddr = CrowdSafe[-1].address
+    else:
+        crowdSafeAddr = config["networks"][network.show_active()]["CrowdSafeV2"]
+
+    if not is_dev():
+        if network.show_active() in FORKED_LOCAL_ENVIRONMENTS:
             # Running this command without deploying will show most recent deployments
-            print(
-                f"https://polygonscan.com/address/{TransparentUpgradeableProxy[-1].address}"
-            )
-            print(f"https://polygonscan.com/address/{ProxyAdmin[-1].address}")
-            print(f"https://polygonscan.com/address/{CrowdSafe[-1].address}")
-        else:
-            # Running this command without deploying will show most recent deployments
-            print(
-                f"https://{network.show_active()}.etherscan.io/address/{TransparentUpgradeableProxy[-1].address}"
-            )
-            print(
-                f"https://{network.show_active()}.etherscan.io/address/{ProxyAdmin[-1].address}"
-            )
-            print(
-                f"https://{network.show_active()}.etherscan.io/address/{CrowdSafe[-1].address}"
-            )
+            print(f"https://polygonscan.com/address/{transparentUpgradeableProxyAddr}")
+            print(f"https://polygonscan.com/address/{proxyAdminAddr}")
+            print(f"https://polygonscan.com/address/{crowdSafeAddr}")
+    else:
+        # Running this command without deploying will show most recent deployments
+        print(
+            f"https://mumbai.polygonscan.com/address/{transparentUpgradeableProxyAddr}"
+        )
+        print(f"https://mumbai.polygonscan.com/address/{proxyAdminAddr}")
+        print(f"https://mumbai.polygonscan.com/address/{crowdSafeAddr}")
