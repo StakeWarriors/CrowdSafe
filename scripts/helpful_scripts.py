@@ -39,7 +39,8 @@ def get_account(index=None, id=None):
         return accounts.load(id)
     if network.show_active() in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         return accounts[0]
-    return accounts.add(config["wallets"]["from_red_key"])
+    active_account = config["networks"][network.show_active()]["active_account"]
+    return accounts.add(config["wallets"][active_account])
 
 
 def is_dev():
@@ -65,7 +66,7 @@ def deploy_dev_contract(contract):
 
 
 def get_contract(contract):
-    if not is_dev() and len(config["networks"][network.show_active()][contract]) > 0:
+    if len(config["networks"][network.show_active()][contract]) > 0:
         return Contract.from_explorer(
             config["networks"][network.show_active()][contract]
         )
@@ -136,18 +137,26 @@ def print_weblink():
     if len(CrowdSafe) > 0:
         crowdSafeAddr = CrowdSafe[-1].address
     else:
-        crowdSafeAddr = config["networks"][network.show_active()]["CrowdSafeV2"]
+        crowdSafeAddr = config["networks"][network.show_active()]["CrowdSafe"]
+    if len(CrowdSafeV2) > 0:
+        crowdSafeAddr = CrowdSafe[-1].address
+    else:
+        crowdSafeV2Addr = config["networks"][network.show_active()]["CrowdSafeV2"]
 
     if not is_dev():
         if network.show_active() in FORKED_LOCAL_ENVIRONMENTS:
             # Running this command without deploying will show most recent deployments
-            print(f"https://polygonscan.com/address/{transparentUpgradeableProxyAddr}")
-            print(f"https://polygonscan.com/address/{proxyAdminAddr}")
-            print(f"https://polygonscan.com/address/{crowdSafeAddr}")
+            print(
+                f"TransparentUpgradeableProxy = https://polygonscan.com/address/{transparentUpgradeableProxyAddr}"
+            )
+            print(f"ProxyAdmin = https://polygonscan.com/address/{proxyAdminAddr}")
+            print(f"CrowdSafe = https://polygonscan.com/address/{crowdSafeAddr}")
+            print(f"CrowdSafeV2 = https://polygonscan.com/address/{crowdSafeV2Addr}")
     else:
         # Running this command without deploying will show most recent deployments
         print(
-            f"https://mumbai.polygonscan.com/address/{transparentUpgradeableProxyAddr}"
+            f"TransparentUpgradeableProxy = https://mumbai.polygonscan.com/address/{transparentUpgradeableProxyAddr}"
         )
-        print(f"https://mumbai.polygonscan.com/address/{proxyAdminAddr}")
-        print(f"https://mumbai.polygonscan.com/address/{crowdSafeAddr}")
+        print(f"ProxyAdmin = https://mumbai.polygonscan.com/address/{proxyAdminAddr}")
+        print(f"CrowdSafe = https://mumbai.polygonscan.com/address/{crowdSafeAddr}")
+        print(f"CrowdSafeV2 = https://mumbai.polygonscan.com/address/{crowdSafeV2Addr}")

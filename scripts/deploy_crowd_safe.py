@@ -1,7 +1,7 @@
 from brownie import (
     network,
     CrowdSafe,
-    CrowdSafeMock,
+    CrowdSafeV2,
     ProxyAdmin,
     TransparentUpgradeableProxy,
     Contract,
@@ -37,12 +37,12 @@ def deploy_proxy(contract):
     return proxy, proxy_admin, proxy_crowdsafe
 
 
-def deploy_contract():
-    contract = deploy_crowdsafe(CrowdSafe)
+def deploy_contract(contract):
+    contract = deploy_crowdsafe(contract)
     (proxy, proxy_admin, proxy_crowdsafe) = deploy_proxy(contract)
     print_weblink()
     return proxy, proxy_admin, proxy_crowdsafe
 
 
 def main():
-    deploy_contract()
+    deploy_contract(CrowdSafeV2)

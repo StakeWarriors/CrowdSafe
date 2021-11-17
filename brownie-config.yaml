@@ -2,19 +2,20 @@ dotenv: .env
 networks:
   mumbai_moralis:
     verify: False
+    TransparentUpgradeableProxy: "0x173b5dAE7c054A7B01F039f872B775cE1282C1d4"
+    ProxyAdmin: "0xB1F68b803a20fc985141189d3f61d0834be79518"
+    CrowdSafe: "0xE21D14dCcC1c9b9C0f92251e15892f6BbA1"
+    active_account: "from_blue_key"
     TransparentUpgradeableProxy: https://mumbai.polygonscan.com/address/0x390ddDDF17FB77B3729051962668472D08b814aC
     ProxyAdmin: https://mumbai.polygonscan.com/address/0xB1F68b803a20fc985141189d3f61d0834be79518
     CrowdSafe: E21D14dCcC1c9b9C0f92251e15892f6BbA1
-  kovan:
-    verify: True
   polygon-main:
     verify: False
     TransparentUpgradeableProxy: "0x28B97a68D53cfBEa6313b588255af4F53a0A7754"
     ProxyAdmin: "0x4a89F6db3df0331656afC68739eFd78A61Cc0325"
     CrowdSafe: "0xafBDFcdc678354eba29A71F2e5A9aed48ee4Ea8B"
     CrowdSafeV2: "0x6A35CB3eaCb2C7C822e8cCB986Ab42df2ac21Be8"
-  mainnet:
-    verify: False
+    active_account: "from_red_key"
 wallets:
   from_blue_key: ${WALLET_PRIVATE_KEY_BLUE}
   from_green_key: ${WALLET_PRIVATE_KEY_GREEN}
